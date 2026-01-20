@@ -11,13 +11,17 @@ export const colors = {
 	textPrimary: '#0F172A',
 	textBody: '#64748B',
 
-	// Accent colors
-	accentBg: '#DCFCE7',
+	// Accent colors (Green)
 	accentText: '#166534',
+	badgeBg: '#7ADEA0',     
 
 	// Button colors
 	btnBg: '#1E293B',
 	btnText: '#FFFFFF',
+	btnHover: '#0F172A',
+
+	// Misc
+	shadowSubtle: 'rgba(0,0,0,0.05)',
 } as const;
 
 export type ColorKey = keyof typeof colors;
