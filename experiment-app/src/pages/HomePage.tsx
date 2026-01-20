@@ -6,36 +6,69 @@ import {
 	Button,
 	Card,
 	CardContent,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Paper,
-	Collapse,
+	Grid,
 } from '@mui/material';
 import { colors } from '../theme/colors';
 import { getCompletionCount, getCompletedExperiments } from '../utils/storage';
-import { formatTimestamp } from '../utils/time';
-import type { CompletedExperiment } from '../types/experiment';
 
 const HomePage: React.FC = () => {
 	const [completionCount, setCompletionCount] = useState(0);
-	const [showResults, setShowResults] = useState(false);
-	const [completedExperiments, setCompletedExperiments] = useState<CompletedExperiment[]>([]);
 
 	useEffect(() => {
 		setCompletionCount(getCompletionCount());
-		setCompletedExperiments(getCompletedExperiments());
+		getCompletedExperiments();
 	}, []);
 
 	const handleStartExperiment = () => {
-		alert("Experiment flow coming soon!");
+		alert('Experiment flow coming soon!');
 	};
 
-	const toggleResults = () => {
-		setShowResults(!showResults);
+	const handleViewResults = () => {
+		alert('Results viewer coming soon!');
+	};
+
+	const cardStyle = {
+		bgcolor: colors.bgCard,
+		border: `1px solid ${colors.borderCard}`,
+		borderRadius: '20px',
+		boxShadow: `0px 4px 20px ${colors.shadowSubtle}`,
+		height: '100%',
+		// Height: smaller on mobile, tall on desktop
+		minHeight: { xs: '380px', md: '550px' },
+		// Width: full width on mobile, fixed 320px on desktop to allow 'auto' packing
+		width: { xs: '100%', md: '320px' },
+		display: 'flex',
+		flexDirection: 'column',
+		transition: 'transform 0.2s',
+		'&:hover': {
+			transform: 'translateY(-5px)',
+		}
+	};
+
+	const badgeStyle = {
+		display: 'inline-block',
+		bgcolor: colors.badgeBg,
+		color: colors.accentText,
+		px: 2,
+		py: 0.5,
+		borderRadius: '6px',
+		fontSize: '0.875rem',
+		fontWeight: 600,
+		mb: 3,
+		width: 'fit-content',
+	};
+
+	const buttonStyle = {
+		bgcolor: colors.btnBg,
+		color: colors.btnText,
+		py: 2,
+		fontSize: '1.1rem',
+		fontWeight: 500,
+		textTransform: 'none',
+		borderRadius: '12px',
+		'&:hover': {
+			bgcolor: colors.btnHover,
+		},
 	};
 
 	return (
@@ -43,175 +76,135 @@ const HomePage: React.FC = () => {
 			sx={{
 				minHeight: '100vh',
 				bgcolor: colors.bgApp,
-				py: 6,
+				display: 'flex',
+				alignItems: 'center',
+				py: 8,
 			}}
 		>
-			<Container maxWidth="md">
-				{/* Header */}
-				<Box sx={{ mb: 6, textAlign: 'center' }}>
+			<Container maxWidth="xl">
+				{/* Hero Section */}
+				<Box sx={{ textAlign: 'center', mb: 8 }}>
 					<Typography
-						variant="h4"
 						sx={{
-						fontWeight: 600,
-						color: colors.textPrimary,
-						mb: 2,
+							fontSize: { xs: '2.5rem', md: '3.5rem' },
+							fontWeight: 600,
+							color: colors.textPrimary,
+							mb: 2,
+							lineHeight: 1.2,
 						}}
 					>
-						Experiment Data Collection System
-					</Typography>
-					<Typography
-						variant="body1"
-						sx={{
-						color: colors.textBody,
-						fontSize: '16px',
-						}}
-					>
-						Welcome to the experiment. Track your interactions and view results.
-					</Typography>
-				</Box>
-
-				{/* Stats Card */}
-				<Card sx={{ mb: 4 }}>
-					<CardContent sx={{ p: 4 }}>
-						<Box
-						sx={{
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'space-between',
-							gap: 2,
-						}}
-						>
-							<Box>
-								<Typography
-								variant="body2"
-								sx={{
-									color: colors.textBody,
-									mb: 1,
-									fontSize: '14px',
-								}}
-								>
-								Experiments Completed
-								</Typography>
-								<Typography
-								variant="h4"
-								sx={{
-									fontWeight: 600,
-									color: colors.textPrimary,
-								}}
-								>
-								{completionCount}
-								</Typography>
-							</Box>
-							<Box
-								sx={{
-								bgcolor: colors.accentBg,
-								color: colors.accentText,
-								px: 3,
-								py: 1.5,
-								borderRadius: '8px',
-								fontWeight: 600,
-								fontSize: '14px',
-								}}
-							>
-								Total Runs
-							</Box>
+						Quantifying Human{' '}
+						<Box component="span" sx={{ fontWeight: 300, fontStyle: 'italic' }}>
+							Intuition
 						</Box>
-					</CardContent>
-				</Card>
+					</Typography>
 
-				{/* Action Buttons */}
-				<Box
-					sx={{
-						display: 'flex',
-						gap: 2,
-						mb: 4,
-					}}
-				>
-					<Button
-						variant="contained"
-						onClick={handleStartExperiment}
+					<Typography
 						sx={{
-						flex: 1,
-						py: 1.5,
-						fontSize: '16px',
-						fontWeight: 500,
+							fontSize: { xs: '1rem', md: '1.125rem' },
+							color: colors.textBody,
+							maxWidth: '700px',
+							mx: 'auto',
+							lineHeight: 1.6,
 						}}
 					>
-						Start New Experiment
-					</Button>
-					<Button
-						variant="outlined"
-						onClick={toggleResults}
-						sx={{
-						flex: 1,
-						py: 1.5,
-						fontSize: '16px',
-						fontWeight: 500,
-						borderColor: colors.borderCard,
-						color: colors.textPrimary,
-						'&:hover': {
-							borderColor: colors.btnBg,
-							bgcolor: 'rgba(30, 41, 59, 0.04)',
-						},
-						}}
-					>
-						{showResults ? 'Hide Results' : 'View Results'}
-					</Button>
+						A micro-experiment designed to measure visual association and reaction times.
+						Participate in a short session to help us map decision-making patterns.
+					</Typography>
 				</Box>
 
-				{/* Results Table */}
-				<Collapse in={showResults}>
-					<Card>
-						<CardContent sx={{ p: 0 }}>
-							{completedExperiments.length === 0 ? (
-								<Box sx={{ p: 4, textAlign: 'center' }}>
-								<Typography variant="body1" color="text.secondary">
-									No experiments completed yet. Start your first experiment!
-								</Typography>
+				{/* Grid Section */}
+				<Grid 
+					container 
+					// Spacing: 32px on mobile, 16px on desktop
+					spacing={{ xs: 4, md: 2 }} 
+					justifyContent="center" 
+					alignItems="stretch"
+				>
+					
+					{/* Card 1 */}
+					<Grid size={{ xs: 12, md: 'auto' }}>
+						<Card sx={cardStyle}>
+							<CardContent sx={{ p: 4, display: 'flex', flexDirection: 'column', flex: 1 }}>
+								<Box sx={badgeStyle}>
+									Action
 								</Box>
-							) : (
-								<TableContainer component={Paper} elevation={0}>
-									<Table>
-										<TableHead>
-											<TableRow sx={{ bgcolor: colors.bgApp }}>
-												<TableCell sx={{ fontWeight: 600, color: colors.textPrimary }}>
-												Experiment ID
-												</TableCell>
-												<TableCell sx={{ fontWeight: 600, color: colors.textPrimary }}>
-												Completed At
-												</TableCell>
-												<TableCell sx={{ fontWeight: 600, color: colors.textPrimary }} align="right">
-												Total Clicks
-												</TableCell>
-											</TableRow>
-										</TableHead>
-										<TableBody>
-											{completedExperiments.map((experiment) => (
-												<TableRow
-													key={experiment.experimentId}
-													sx={{
-														'&:last-child td, &:last-child th': { border: 0 },
-														'&:hover': { bgcolor: colors.bgApp },
-													}}
-												>
-												<TableCell sx={{ color: colors.textBody, fontSize: '14px' }}>
-													{experiment.experimentId.slice(0, 8)}...
-												</TableCell>
-												<TableCell sx={{ color: colors.textBody, fontSize: '14px' }}>
-													{formatTimestamp(experiment.completedAt)}
-												</TableCell>
-												<TableCell align="right" sx={{ color: colors.textBody, fontSize: '14px' }}>
-													{experiment.buttonClicks.length}
-												</TableCell>
-												</TableRow>
-											))}
-										</TableBody>
-									</Table>
-								</TableContainer>
-							)}
-						</CardContent>
-					</Card>
-				</Collapse>
+
+								<Typography variant="h5" sx={{ fontWeight: 600, color: colors.textPrimary, mb: 2 }}>
+									Start New Experiment
+								</Typography>
+
+								<Typography sx={{ color: colors.textBody, fontSize: '0.95rem', mb: 4, flex: 1 }}>
+									Begin a new session to test your visual associations and reaction times.
+								</Typography>
+
+								<Box sx={{ mt: 'auto' }}>
+									<Button
+										variant="contained"
+										fullWidth
+										onClick={handleStartExperiment}
+										sx={buttonStyle}
+									>
+										Start Experiment
+									</Button>
+								</Box>
+							</CardContent>
+						</Card>
+					</Grid>
+					
+					{/* Card 2 */}
+					<Grid size={{ xs: 12, md: 'auto' }}>
+						<Card sx={cardStyle}>
+							<CardContent sx={{ p: 4, display: 'flex', flexDirection: 'column', flex: 1 }}>
+								<Box sx={badgeStyle}>
+									History
+								</Box>
+
+								<Typography variant="h5" sx={{ fontWeight: 600, color: colors.textPrimary, mb: 2 }}>
+									View Past Results
+								</Typography>
+
+								<Typography sx={{ color: colors.textBody, fontSize: '0.95rem', mb: 4, flex: 1 }}>
+									Review detailed data from your previous experiment sessions.
+								</Typography>
+
+								<Box sx={{ mt: 'auto' }}>
+									<Button
+										variant="contained"
+										fullWidth
+										onClick={handleViewResults}
+										sx={buttonStyle}
+									>
+										View Results
+									</Button>
+								</Box>
+							</CardContent>
+						</Card>
+					</Grid>
+
+					{/* Card 3 */}
+					<Grid size={{ xs: 12, md: 'auto' }}>
+						<Card sx={cardStyle}>
+							<CardContent sx={{ p: 4, display: 'flex', flexDirection: 'column', flex: 1 }}>
+								<Box sx={badgeStyle}>
+									Status
+								</Box>
+
+								<Typography variant="h5" sx={{ fontWeight: 600, color: colors.textPrimary, mb: 2 }}>
+									Experiments Completed
+								</Typography>
+
+								<Typography sx={{ color: colors.textBody, fontSize: '0.95rem', mb: 4, flex: 1 }}>
+									Total number of experiments you've successfully completed on this device.
+								</Typography>
+
+								<Typography sx={{ fontSize: '4rem', fontWeight: 600, color: colors.textPrimary, textAlign: 'center' }}>
+									{completionCount}
+								</Typography>
+							</CardContent>
+						</Card>
+					</Grid>
+				</Grid>
 			</Container>
 		</Box>
 	);
