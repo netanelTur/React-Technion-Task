@@ -54,10 +54,10 @@ const HomePage: React.FC = () => {
 		borderRadius: '20px',
 		boxShadow: `0px 4px 20px ${colors.shadowSubtle}`,
 		height: '100%',
-		// Height: smaller on mobile, tall on desktop
-		minHeight: { xs: '380px', md: '550px' },
-		// Width: full width on mobile, fixed 320px on desktop to allow 'auto' packing
-		width: { xs: '100%', md: '320px' },
+		// Height: smaller on mobile, medium on tablet/laptop, tall on desktop
+		minHeight: { xs: '320px', sm: '380px', md: '420px', lg: '480px' },
+		// Width: full width on mobile, adaptive on tablet/laptop, fixed on large screens
+		width: { xs: '100%', sm: '100%', md: '250px', lg: '300px' },
 		display: 'flex',
 		flexDirection: 'column',
 		transition: 'transform 0.2s',
