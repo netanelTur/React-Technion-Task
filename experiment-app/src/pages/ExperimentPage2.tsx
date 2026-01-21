@@ -47,6 +47,7 @@ export default function ExperimentPage2() {
 	}
 
 	const likertClicks = currentExperiment.buttonClicks.filter((click) => click.buttonType === 'likert');
+	const finalLikertChoice = likertClicks.length > 0 ? likertClicks[likertClicks.length - 1] : null;
 
 	return (
 		<Box
@@ -145,7 +146,7 @@ export default function ExperimentPage2() {
 				</Card>
 
 				{/* Likert Scale Data */}
-				{likertClicks.length > 0 && (
+				{finalLikertChoice && (
 					<Card
 						sx={{
 							border: `1px solid ${colors.borderCard}`,
@@ -163,7 +164,7 @@ export default function ExperimentPage2() {
 									mb: 2,
 								}}
 							>
-								Likert Scale Ratings
+								Likert Scale Rating
 							</Typography>
 							<TableContainer component={Paper} elevation={0} sx={{ border: `1px solid ${colors.borderCard}` }}>
 								<Table>
@@ -174,12 +175,10 @@ export default function ExperimentPage2() {
 										</TableRow>
 									</TableHead>
 									<TableBody>
-										{likertClicks.map((click, index) => (
-											<TableRow key={index} sx={{ '&:last-child td': { border: 0 } }}>
-												<TableCell>{click.buttonValue}</TableCell>
-												<TableCell>{formatTimestamp(click.timestamp)}</TableCell>
-											</TableRow>
-										))}
+										<TableRow sx={{ '&:last-child td': { border: 0 } }}>
+											<TableCell>{finalLikertChoice.buttonValue}</TableCell>
+											<TableCell>{formatTimestamp(finalLikertChoice.timestamp)}</TableCell>
+										</TableRow>
 									</TableBody>
 								</Table>
 							</TableContainer>
