@@ -8,19 +8,34 @@ import {
 	Card,
 	CardContent,
 	Grid,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogActions,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Paper,
 } from '@mui/material';
 import { colors } from '../theme/colors';
 import { getCompletionCount, getCompletedExperiments } from '../utils/storage';
 import { useExperiment } from '../context/ExperimentContext';
+import { formatTimestamp } from '../utils/time';
+import type { CompletedExperiment } from '../types/experiment';
 
 const HomePage: React.FC = () => {
 	const navigate = useNavigate();
 	const { startNewExperiment } = useExperiment();
 	const [completionCount, setCompletionCount] = useState(0);
+	const [dialogOpen, setDialogOpen] = useState(false);
+	const [completedExperiments, setCompletedExperiments] = useState<CompletedExperiment[]>([]);
 
 	useEffect(() => {
 		setCompletionCount(getCompletionCount());
-		getCompletedExperiments();
+		setCompletedExperiments(getCompletedExperiments());
 	}, []);
 
 	const handleStartExperiment = () => {
@@ -29,7 +44,8 @@ const HomePage: React.FC = () => {
 	};
 
 	const handleViewResults = () => {
-		alert('Results viewer coming soon!');
+		setCompletedExperiments(getCompletedExperiments());
+		setDialogOpen(true);
 	};
 
 	const cardStyle = {
@@ -38,10 +54,10 @@ const HomePage: React.FC = () => {
 		borderRadius: '20px',
 		boxShadow: `0px 4px 20px ${colors.shadowSubtle}`,
 		height: '100%',
-		// Height: smaller on mobile, tall on desktop
-		minHeight: { xs: '380px', md: '550px' },
-		// Width: full width on mobile, fixed 320px on desktop to allow 'auto' packing
-		width: { xs: '100%', md: '320px' },
+		// Height: smaller on mobile, medium on tablet/laptop, tall on desktop
+		minHeight: { xs: '320px', sm: '380px', md: '420px', lg: '480px' },
+		// Width: full width on mobile, adaptive on tablet/laptop, fixed on large screens
+		width: { xs: '100%', sm: '100%', md: '250px', lg: '300px' },
 		display: 'flex',
 		flexDirection: 'column',
 		transition: 'transform 0.2s',
@@ -210,6 +226,79 @@ const HomePage: React.FC = () => {
 						</Card>
 					</Grid>
 				</Grid>
+
+				{/* Results Dialog */}
+				<Dialog
+					open={dialogOpen}
+					onClose={() => setDialogOpen(false)}
+					maxWidth="lg"
+					fullWidth
+				>
+					<DialogTitle sx={{ fontWeight: 600, color: colors.textPrimary }}>
+						Past Experiment Results
+					</DialogTitle>
+					<DialogContent>
+						{completedExperiments.length === 0 ? (
+							<Typography sx={{ color: colors.textBody, py: 4, textAlign: 'center' }}>
+								No completed experiments yet. Start your first experiment!
+							</Typography>
+						) : (
+							<TableContainer component={Paper} elevation={0} sx={{ border: `1px solid ${colors.borderCard}` }}>
+								<Table>
+									<TableHead>
+										<TableRow sx={{ bgcolor: colors.bgApp }}>
+											<TableCell sx={{ fontWeight: 600 }}>#</TableCell>
+											<TableCell sx={{ fontWeight: 600 }}>Experiment ID</TableCell>
+											<TableCell sx={{ fontWeight: 600 }}>First Click</TableCell>
+											<TableCell sx={{ fontWeight: 600 }}>Likert Rating</TableCell>
+											<TableCell sx={{ fontWeight: 600 }}>Completed At</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{completedExperiments.map((exp, index) => {
+											const likertClicks = exp.buttonClicks.filter(click => click.buttonType === 'likert');
+											const finalLikert = likertClicks.length > 0 ? likertClicks[likertClicks.length - 1] : null;
+											
+											return (
+												<TableRow key={exp.experimentId} sx={{ '&:last-child td': { border: 0 } }}>
+													<TableCell>{index + 1}</TableCell>
+													<TableCell sx={{ fontFamily: 'monospace', fontSize: '0.875rem' }}>
+														{exp.experimentId.substring(0, 8)}...
+													</TableCell>
+													<TableCell>
+														{exp.firstClickTimestamp ? formatTimestamp(exp.firstClickTimestamp) : 'N/A'}
+													</TableCell>
+													<TableCell>
+														{finalLikert ? finalLikert.buttonValue : 'N/A'}
+													</TableCell>
+													<TableCell>
+														{formatTimestamp(exp.completedAt)}
+													</TableCell>
+												</TableRow>
+											);
+										})}
+									</TableBody>
+								</Table>
+							</TableContainer>
+						)}
+					</DialogContent>
+					<DialogActions sx={{ p: 2 }}>
+						<Button
+							onClick={() => setDialogOpen(false)}
+							variant="contained"
+							sx={{
+								bgcolor: colors.btnBg,
+								color: colors.btnText,
+								'&:hover': {
+									bgcolor: colors.btnBg,
+									opacity: 0.9,
+								},
+							}}
+						>
+							Close
+						</Button>
+					</DialogActions>
+				</Dialog>
 			</Container>
 		</Box>
 	);
