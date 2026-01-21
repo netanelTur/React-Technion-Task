@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
 	Box,
 	Container,
@@ -10,8 +11,11 @@ import {
 } from '@mui/material';
 import { colors } from '../theme/colors';
 import { getCompletionCount, getCompletedExperiments } from '../utils/storage';
+import { useExperiment } from '../context/ExperimentContext';
 
 const HomePage: React.FC = () => {
+	const navigate = useNavigate();
+	const { startNewExperiment } = useExperiment();
 	const [completionCount, setCompletionCount] = useState(0);
 
 	useEffect(() => {
@@ -20,7 +24,8 @@ const HomePage: React.FC = () => {
 	}, []);
 
 	const handleStartExperiment = () => {
-		alert('Experiment flow coming soon!');
+		startNewExperiment();
+		navigate('/experiment/1');
 	};
 
 	const handleViewResults = () => {

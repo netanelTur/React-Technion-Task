@@ -1,10 +1,12 @@
 /**
  * Type definitions for experiment data collection
  */
+export type ButtonType = 'likert' | 'random-word' | 'submit';
+
 export interface ButtonClick {
 	timestamp: string; // UTC ISO string
 	buttonValue: string;
-	buttonType: 'likert' | 'random-word' | 'submit';
+	buttonType: ButtonType;
 }
 
 export interface ExperimentData {
