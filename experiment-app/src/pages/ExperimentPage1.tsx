@@ -42,12 +42,21 @@ export default function ExperimentPage1() {
 
 	// Handle any click on the page to record first click timestamp
 	useEffect(() => {
+		// If first click is already recorded, do not attach listener
+		if (currentExperiment?.firstClickTimestamp) return;
+
 		function handlePageClick() {
 			recordFirstClick();
 		}
-		document.addEventListener('click', handlePageClick);
-		return () => document.removeEventListener('click', handlePageClick);
-	}, [recordFirstClick]);
+
+		// { once: true } automatically removes the listener after the first trigger
+		document.addEventListener('click', handlePageClick, { once: true });
+
+		return () => {
+			// Cleanup in case the component unmounts before clicking
+			document.removeEventListener('click', handlePageClick);
+		};
+	}, [recordFirstClick, currentExperiment?.firstClickTimestamp]);
 
 	const handleLikertClick = (value: number) => {
 		setSelectedLikert(value);
