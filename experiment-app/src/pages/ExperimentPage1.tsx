@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Typography, Button, ButtonGroup, Card, CardContent } from '@mui/material';
+import { Box, Container, Typography, Button, ButtonGroup, Card, CardContent, Skeleton } from '@mui/material';
 import { useExperiment } from '../context/ExperimentContext';
 import { colors } from '../theme/colors';
 
@@ -15,6 +15,7 @@ export default function ExperimentPage1() {
 	const [selectedLikert, setSelectedLikert] = useState<number | null>(null);
 	const [randomWords, setRandomWords] = useState<string[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [imageLoaded, setImageLoaded] = useState(false);
 
 	// Redirect to home if no experiment is active
 	useEffect(() => {
@@ -132,17 +133,31 @@ export default function ExperimentPage1() {
 								mb: 4,
 								display: 'flex',
 								justifyContent: 'center',
+								position: 'relative',
 							}}
 						>
+							{!imageLoaded && (
+								<Skeleton
+									variant="rectangular"
+									width={400}
+									height={300}
+									sx={{
+										borderRadius: '12px',
+										maxWidth: '100%',
+									}}
+								/>
+							)}
 							<Box
 								component="img"
 								src={IMAGE_API_URL}
 								alt="Experiment image"
+								onLoad={() => setImageLoaded(true)}
 								sx={{
 									maxWidth: '100%',
 									height: 'auto',
 									borderRadius: '12px',
 									boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+									display: imageLoaded ? 'block' : 'none',
 								}}
 							/>
 						</Box>
